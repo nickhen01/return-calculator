@@ -24,6 +24,7 @@ GEM
     rack (2.0.6)
     rack-protection (2.0.5)
       rack
+    rb-readline (0.5.5)
     sinatra (2.0.5)
       mustermann (~> 1.0)
       rack (~> 2.0)
@@ -45,6 +46,7 @@ DEPENDENCIES
   better_errors
   binding_of_caller
   pry-byebug
+  rb-readline
   sinatra
   sinatra-contrib
 
