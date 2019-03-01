@@ -1,0 +1,14 @@
+<h3>Upload your CSV</h3>
+<form action='/upload' enctype="multipart/form-data" method='POST' class="mb-4 mt-5">
+  <div class="form-group">
+    <label for="file">CSV file</label>
+      <input name="file" type="file" class="form-control-file"/>
+  </div>
+  <div class="form-group">
+    <label for="file">Portfolio size</label>
+    <input name="portfolio_size" placeholder="Size of the portfolio" class="form-control"/>
+  </div>
+  <div class="form-group">
+    <input type="submit" value="Upload" class="btn btn-primary"/>
+  </div>
+</form>

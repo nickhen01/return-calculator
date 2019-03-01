@@ -37,6 +37,7 @@ GEM
       rack-protection (= 2.0.5)
       sinatra (= 2.0.5)
       tilt (>= 1.3, < 3)
+    smarter_csv (1.2.6)
     tilt (2.0.9)
 
 PLATFORMS
@@ -49,6 +50,7 @@ DEPENDENCIES
   rb-readline
   sinatra
   sinatra-contrib
+  smarter_csv
 
 BUNDLED WITH
    1.16.2
