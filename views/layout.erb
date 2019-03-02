@@ -16,6 +16,12 @@
 <div class="container">
   <div class="row">
     <div class="col-sm-8 col-sm-offset-2 mx-auto mt-5">
+      <% flash.keys.each do |type| %>
+        <div data-alert class="flash <%= type %> alert-box radius alert alert-warning" role="alert"">
+          <%= flash[type] %>
+          <a href="/" class="close">&times;</a>
+        </div>
+      <% end %>
       <%= yield %>
     </div>
   </div>
