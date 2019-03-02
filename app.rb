@@ -13,11 +13,11 @@ configure :development do
   BetterErrors.application_root = File.expand_path('..', __FILE__)
 end
 
-get '/' do
+get 'https://momentum-returns.herokuapp.com/' do
   erb :index
 end
 
-post '/upload' do
+post 'https://momentum-returns.herokuapp.com/upload' do
   if params[:portfolio_size] === "" || params[:file].nil?
     flash[:warning] = "Please uplaod a csv file and fill in the portfolio size"
     redirect '/'
@@ -32,10 +32,10 @@ post '/upload' do
 
   session[:top_returns] = @top_returns
   session[:last_returns] = @last_returns
-  redirect '/download'
+  redirect 'https://momentum-returns.herokuapp.com/download'
 end
 
-get '/download' do
+get 'https://momentum-returns.herokuapp.com/download' do
   @tops = session[:top_returns]
   @lasts = session[:last_returns]
   content_type 'application/csv'
