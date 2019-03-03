@@ -26,11 +26,16 @@ post '/upload' do
   portfolio_size = params[:portfolio_size].to_i
   data           = SmarterCSV.process(params[:file][:tempfile].path)
 
-  @top_returns  = Sort.new(portfolio_size, data).tops
-  @last_returns = Sort.new(portfolio_size, data).lasts
+  if    params[:report] == "option1"
+    top_returns  = Sort.new(portfolio_size, data).tops
+    last_returns = Sort.new(portfolio_size, data).lasts
+  elsif params[:report] == "option2"
+    top_returns  = Sort.new(portfolio_size, data).top_portfolio_returns
+    last_returns = Sort.new(portfolio_size, data).last_portfolio_returns
+  end
 
-  session[:top_returns]  = @top_returns
-  session[:last_returns] = @last_returns
+  session[:top_returns]  = top_returns
+  session[:last_returns] = last_returns
   redirect '/download'
 end
 
