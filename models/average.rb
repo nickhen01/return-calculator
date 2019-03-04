@@ -10,7 +10,7 @@ class Average
     portfolio_average_return = []
     portfolio.each do |on_date_portfolio|
       sum_return = 0
-      portfolio_without_date = on_date_portfolio.reject { |k, v| k === :date }
+      portfolio_without_date = on_date_portfolio.reject { |k, v| k == :date }
       portfolio_without_date.each_value do |each_return|
         sum_return += each_return
       end

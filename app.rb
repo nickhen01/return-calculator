@@ -20,7 +20,7 @@ get '/' do
 end
 
 post '/upload' do
-  if params[:portfolio_size] === "" || params[:file].nil?
+  if params[:portfolio_size] === "" || params[:file].nil? || !params[:file][:filename].match?('.+(\.csv)$')
     flash[:warning] = "Please uplaod a csv file and fill in the portfolio size"
     redirect '/'
   end

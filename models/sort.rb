@@ -9,10 +9,12 @@ class Sort
   def all
     sorted_data = []
     data.each do |date_hash|
-      single_date_returns   = date_hash.reject { |k, v| k === :date }
-      sorted_returns        = single_date_returns.sort_by(&:last).to_h
-      sorted_returns[:date] = date_hash[:date]
-      sorted_data << sorted_returns
+      single_date_returns = date_hash.reject { |k, v| v.class != Float && v.class != Integer }
+      unless single_date_returns == {}
+        sorted_returns        = single_date_returns.sort_by(&:last).to_h
+        sorted_returns[:date] = date_hash[:date]
+        sorted_data << sorted_returns
+      end
     end
     return sorted_data
   end
