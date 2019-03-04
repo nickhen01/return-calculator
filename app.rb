@@ -3,9 +3,11 @@ require "sinatra/reloader" if development?
 require "pry-byebug"
 require "better_errors"
 require "smarter_csv"
-require_relative "models/sort"
 require "csv"
-require 'sinatra/flash'
+require "sinatra/flash"
+require_relative "models/sort"
+require_relative "models/average"
+require_relative "models/generate_csv"
 enable :sessions
 
 configure :development do
@@ -26,35 +28,34 @@ post '/upload' do
   portfolio_size = params[:portfolio_size].to_i
   data           = SmarterCSV.process(params[:file][:tempfile].path)
 
-  if    params[:report] == "option1"
-    top_returns  = Sort.new(portfolio_size, data).tops
-    last_returns = Sort.new(portfolio_size, data).lasts
-  elsif params[:report] == "option2"
-    top_returns  = Sort.new(portfolio_size, data).top_portfolio_returns
-    last_returns = Sort.new(portfolio_size, data).last_portfolio_returns
+  case params[:report]
+  when "option1"
+    session[:top_returns]  = Sort.new(portfolio_size, data).tops
+    session[:last_returns] = Sort.new(portfolio_size, data).lasts
+    redirect '/download/sorted'
+  when "option2"
+    session[:top_returns]  = Sort.new(portfolio_size, data).top_portfolio_returns
+    session[:last_returns] = Sort.new(portfolio_size, data).last_portfolio_returns
+    redirect '/download/sorted'
+  when "option3"
+    sorted_top_returns     = Sort.new(portfolio_size, data).top_portfolio_returns
+    sorted_last_returns    = Sort.new(portfolio_size, data).last_portfolio_returns
+    session[:top_returns]  = Average.new(portfolio_size, sorted_top_returns).average_return
+    session[:last_returns] = Average.new(portfolio_size, sorted_last_returns).average_return
+    redirect '/download/average'
+  else
+    redirect '/'
   end
-
-  session[:top_returns]  = top_returns
-  session[:last_returns] = last_returns
-  redirect '/download'
 end
 
-get '/download' do
-  tops  = session[:top_returns]
-  lasts = session[:last_returns]
-
+get '/download/sorted' do
   content_type 'application/csv'
-  attachment "sorted_top.csv"
-  csv_string = CSV.generate do |csv|
-    csv << ["Tops"]
-    tops.each do |single_date_returns|
-      csv << single_date_returns.keys
-      csv << single_date_returns.values
-    end
-    csv << ["Lasts"]
-    lasts.each do |single_date_returns|
-      csv << single_date_returns.keys
-      csv << single_date_returns.values
-    end
-  end
+  attachment "sorted_returns.csv"
+  csv_string = GenerateCsv.new(session[:top_returns], session[:last_returns]).sorted_with_tops_and_lasts
+end
+
+get '/download/average' do
+  content_type 'application/csv'
+  attachment "average_returns.csv"
+  csv_string = GenerateCsv.new(session[:top_returns], session[:last_returns]).average_with_tops_and_lasts
 end
