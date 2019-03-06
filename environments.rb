@@ -1,11 +1,12 @@
 require "better_errors"
+require "active_record"
 
 configure :development do
   use BetterErrors::Middleware
   BetterErrors.application_root = File.expand_path('..', __FILE__)
 end
 
-configure :development, :production do
+configure :development do
   db = URI.parse(ENV['DATABASE_URL'] || 'postgres:///development')
 
   ActiveRecord::Base.establish_connection(
@@ -17,3 +18,8 @@ configure :development, :production do
       :encoding => 'utf8'
   )
 end
+
+configure :production do
+  ActiveRecord::Base.establish_connection(ENV['DATABASE_URL'] || 'postgres://localhost/mydb')
+end
+
