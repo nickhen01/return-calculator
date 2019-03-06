@@ -1,7 +1,7 @@
 class GenerateCsv
   attr_reader :tops, :lasts
 
-  def initialize (tops = [], lasts = [])
+  def initialize(tops = [], lasts = [])
     @tops  = tops
     @lasts = lasts
   end

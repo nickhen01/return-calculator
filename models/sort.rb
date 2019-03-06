@@ -1,20 +1,15 @@
-class Sort
-  attr_reader :portfolio_size, :data
-
-  def initialize(portfolio_size, data)
-    @portfolio_size = portfolio_size
-    @data           = data
-  end
+class Sort < ActiveRecord::Base
+  serialize :data, Array
 
   def all
     sorted_data = []
     data.each do |date_hash|
       single_date_returns = date_hash.reject { |k, v| v.class != Float && v.class != Integer }
-      unless single_date_returns == {}
+      # unless single_date_returns == {}
         sorted_returns        = single_date_returns.sort_by(&:last).to_h
         sorted_returns[:date] = date_hash[:date]
         sorted_data << sorted_returns
-      end
+      # end
     end
     return sorted_data
   end
@@ -22,7 +17,7 @@ class Sort
   def lasts
     last_returns = []
     self.all.each do |single_date_sorted_returns|
-      single_date_lasts        = single_date_sorted_returns.first(portfolio_size).to_h
+      single_date_lasts        = single_date_sorted_returns.first(size).to_h
       single_date_lasts[:date] = single_date_sorted_returns[:date]
       last_returns << single_date_lasts
     end
@@ -33,7 +28,7 @@ class Sort
     top_returns = []
     self.all.each do |single_date_sorted_returns|
       first_top_return_index = single_date_sorted_returns.length - 1
-      last_top_return_index  = first_top_return_index - portfolio_size
+      last_top_return_index  = first_top_return_index - size
       single_date_tops       = {}
       single_date_sorted_returns.keys[last_top_return_index...first_top_return_index].each do |key|
         single_date_tops[key] = single_date_sorted_returns[key]
