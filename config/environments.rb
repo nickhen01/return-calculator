@@ -6,7 +6,7 @@ configure :development do
   BetterErrors.application_root = File.expand_path('..', __FILE__)
 end
 
-configure :development do
+configure :development, :production do
   db = URI.parse(ENV['DATABASE_URL'] || 'postgres:///development')
 
   ActiveRecord::Base.establish_connection(
@@ -18,8 +18,3 @@ configure :development do
       :encoding => 'utf8'
   )
 end
-
-configure :production do
-  ActiveRecord::Base.establish_connection(ENV['DATABASE_URL'] || 'postgres://development')
-end
-

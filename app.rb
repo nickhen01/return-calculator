@@ -8,6 +8,7 @@ require "sinatra/flash"
 require_relative "models/sort"
 require_relative "models/average"
 require_relative "models/generate_csv"
+require_relative './config/environments'
 enable :sessions
 
 get '/' do
