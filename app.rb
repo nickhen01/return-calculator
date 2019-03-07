@@ -1,15 +1,14 @@
 require 'sinatra'
 require 'sinatra/activerecord'
+require_relative "models/sort"
+require_relative "models/average"
+require_relative "models/generate_csv"
+require_relative './config/environments'
 require "sinatra/reloader" if development?
 require "pry-byebug"
 require "smarter_csv"
 require "csv"
 require "sinatra/flash"
-require_relative "models/sort"
-require_relative "models/average"
-require_relative "models/generate_csv"
-require_relative './config/environments'
-enable :sessions
 
 get '/' do
   erb :index
