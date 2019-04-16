@@ -12,6 +12,7 @@ class Average
       sum_return = 0
       portfolio_without_date = on_date_portfolio.reject { |k, v| k == :date }
       portfolio_without_date.each_value do |each_return|
+        each_return = 0 if each_return == nil
         sum_return += each_return
       end
       average_return                   = sum_return / portfolio_size

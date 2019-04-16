@@ -42,7 +42,6 @@ GEM
     rack-protection (2.0.5)
       rack
     rake (12.3.2)
-    rb-readline (0.5.5)
     sinatra (2.0.5)
       mustermann (~> 1.0)
       rack (~> 2.0)
@@ -76,7 +75,6 @@ DEPENDENCIES
   pg
   pry-byebug
   rake
-  rb-readline
   sinatra
   sinatra-activerecord
   sinatra-contrib
