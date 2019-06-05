@@ -82,9 +82,13 @@ class Sort < ActiveRecord::Base
       count += 1
       stocks                = self.list_of_stocks
       single_date_returns   = date_hash.reject { |k, v| v.class != Float && v.class != Integer }
-      minimum_s_d_returns   = minimum_volatility(single_date_returns, stocks, count)
-      s_d_returns           = maximum_volatility(minimum_s_d_returns, stocks, count)
-      sorted_returns        = s_d_returns.sort_by(&:last).to_h
+      if count > 1
+        minimum_s_d_returns   = minimum_volatility(single_date_returns, stocks, count)
+        s_d_returns           = maximum_volatility(minimum_s_d_returns, stocks, count)
+        sorted_returns        = s_d_returns.sort_by(&:last).to_h
+      else
+        sorted_returns        = single_date_returns.sort_by(&:last).to_h
+      end
       sorted_returns[:date] = date_hash[:date]
       sorted_data << sorted_returns
     end
