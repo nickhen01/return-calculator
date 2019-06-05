@@ -15,14 +15,16 @@ get '/' do
 end
 
 post '/upload' do
-  if params[:portfolio_size] === "" || params[:file].nil? || !params[:file][:filename].match?('.+(\.csv)$')
+  if params[:portfolio_size].nil? || params[:file].nil? || !params[:file][:filename].match?('.+(\.csv)$') || params[:min_volatility].nil? || params[:max_volatility].nil?
     flash[:warning] = "Please uplaod a csv file and fill in the portfolio size"
     redirect '/'
   end
   Sort.destroy_all
   portfolio_size = params[:portfolio_size].to_i
+  min_volatility = params[:min_volatility].to_f
+  max_volatility = params[:max_volatility].to_f
   data           = SmarterCSV.process(params[:file][:tempfile].path)
-  @sort_instance = Sort.new(size: portfolio_size, data: data)
+  @sort_instance = Sort.new(size: portfolio_size, data: data, min_volatility: min_volatility, max_volatility: max_volatility)
   @sort_instance.save
 
   case params[:report]

@@ -1,15 +1,92 @@
 class Sort < ActiveRecord::Base
   serialize :data, Array
 
+  def list_of_stocks
+    stock_list = []
+    hash_without_date = data[0].reject { |k, v| k == :date }
+    hash_without_date.each do |k, v|
+      stock_hash = {}
+      stock_hash[:ticker] = k
+      stock_hash[:returns] = []
+      stock_list << stock_hash
+    end
+    data.each do |date_hash|
+      date_hash.reject { |k, v| v.class != Float && v.class != Integer }
+      date_hash.each do |k, v|
+        stock_list.each do |stock|
+          if stock[:ticker] == k
+            stock[:returns] << v
+          end
+        end
+      end
+    end
+    return stock_list
+  end
+
+  def standard_deviation(array)
+    sum = 0
+    array.each do |stock_return|
+      sum += stock_return
+    end
+
+    mean = sum / array.length
+
+    array.map! do |stock_return|
+      (stock_return - mean) * (stock_return - mean)
+    end
+
+    sum = 0
+    array.each do |stock_return|
+      sum += stock_return
+    end
+
+    square_mean = sum / array.length
+
+    return Math.sqrt(square_mean)
+  end
+
+  def minimum_volatility(single_date_returns, stocks, count)
+    s_d_returns = {}
+    single_date_returns.each do |k, v|
+      stocks.each do |stock|
+        if stock[:ticker] == k
+          standard_deviation = self.standard_deviation(stock[:returns].take(count))
+          if standard_deviation >= min_volatility
+            s_d_returns[k] = v
+          end
+        end
+      end
+    end
+    return s_d_returns
+  end
+
+  def maximum_volatility(single_date_returns, stocks, count)
+    s_d_returns = {}
+    single_date_returns.each do |k, v|
+      stocks.each do |stock|
+        if stock[:ticker] == k
+          standard_deviation = self.standard_deviation(stock[:returns].take(count))
+          if standard_deviation <= max_volatility
+            s_d_returns[k] = v
+          end
+        end
+      end
+    end
+    return s_d_returns
+  end
+
   def all
     sorted_data = []
+    count = 0
     data.each do |date_hash|
-      single_date_returns = date_hash.reject { |k, v| v.class != Float && v.class != Integer }
-      # unless single_date_returns == {}
-        sorted_returns        = single_date_returns.sort_by(&:last).to_h
-        sorted_returns[:date] = date_hash[:date]
-        sorted_data << sorted_returns
-      # end
+      count += 1
+      stocks                = self.list_of_stocks
+      single_date_returns   = date_hash.reject { |k, v| v.class != Float && v.class != Integer }
+      minimum_s_d_returns   = minimum_volatility(single_date_returns, stocks, count)
+      s_d_returns           = maximum_volatility(minimum_s_d_returns, stocks, count)
+      sorted_returns        = s_d_returns.sort_by(&:last).to_h
+      sorted_returns[:date] = date_hash[:date]
+      sorted_data << sorted_returns
     end
     return sorted_data
   end
