@@ -30,7 +30,6 @@ post '/upload' do
   tickers                   = CSV.read(params[:file][:tempfile].path)[0].drop(1).map { |ticker| ticker.downcase.to_sym }
   @sort_instance.returns    = @sort_instance.list_of_stocks(tickers)
   @sort_instance.volatility = @sort_instance.stock_volatility
-
   @sort_instance.all        = @sort_instance.sort_all
   @sort_instance.save
 
