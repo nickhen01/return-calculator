@@ -19,19 +19,19 @@ post '/upload' do
     flash[:warning] = "Please uplaod a csv file and fill in the portfolio size"
     redirect '/'
   end
-  Sort.destroy_all
-  portfolio_size = params[:portfolio_size].to_i
-  min_volatility = params[:min_volatility].to_f
-  max_volatility = params[:max_volatility].to_f
-  data           = SmarterCSV.process(params[:file][:tempfile].path)
-  @sort_instance = Sort.new(size: portfolio_size, data: data, min_volatility: min_volatility, max_volatility: max_volatility)
 
-  @sort_instance.returns = @sort_instance.list_of_stocks
+  Sort.destroy_all
+
+  portfolio_size            = params[:portfolio_size].to_i
+  min_volatility            = params[:min_volatility].to_f
+  max_volatility            = params[:max_volatility].to_f
+  data                      = SmarterCSV.process(params[:file][:tempfile].path)
+  @sort_instance            = Sort.new(size: portfolio_size, data: data, min_volatility: min_volatility, max_volatility: max_volatility)
+  tickers                   = CSV.read(params[:file][:tempfile].path)[0].drop(1).map { |ticker| ticker.downcase.to_sym }
+  @sort_instance.returns    = @sort_instance.list_of_stocks(tickers)
   @sort_instance.volatility = @sort_instance.stock_volatility
 
-  binding.pry
-
-  @sort_instance.all = @sort_instance.sort_all
+  @sort_instance.all        = @sort_instance.sort_all
   @sort_instance.save
 
   case params[:report]

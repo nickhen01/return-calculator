@@ -26,14 +26,13 @@ class Sort < ActiveRecord::Base
     return Math.sqrt(square_mean)
   end
 
-  def list_of_stocks
+  def list_of_stocks(tickers)
     stock_list = []
-    hash_without_date = data[0].reject { |k, v| k == :date }
-    hash_without_date.each do |k, v|
+    tickers.each do |ticker|
       stock_hash = {}
-      stock_hash[:ticker] = k
+      stock_hash[:ticker]  = ticker
       stock_hash[:returns] = []
-      stock_hash[:dates] = []
+      stock_hash[:dates]   = []
       stock_list << stock_hash
     end
     data.each do |date_hash|
@@ -68,19 +67,10 @@ class Sort < ActiveRecord::Base
     single_date_returns.each do |k, v|
       index = self.returns.find {|stock| stock[:ticker] == k }[:dates].index(date)
       standard_deviation = self.volatility[k][index]
-      puts "#####index####"
-      puts index
-      puts "####volatility####"
-      puts standard_deviation
       s_d_returns[k] = v if standard_deviation >= min_volatility && standard_deviation <= max_volatility
     end
     return s_d_returns
   end
-
-
-  # :uk0264356
-  # 16.6667
-  # "29/12/2000"
 
   def sort_all
     sorted_data = []
