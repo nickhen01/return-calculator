@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_06_05_204259) do
+ActiveRecord::Schema.define(version: 2019_06_08_124101) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -22,6 +22,9 @@ ActiveRecord::Schema.define(version: 2019_06_05_204259) do
     t.datetime "updated_at", null: false
     t.float "min_volatility"
     t.float "max_volatility"
+    t.text "all"
+    t.text "volatility"
+    t.text "returns"
   end
 
 end

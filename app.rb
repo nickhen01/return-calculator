@@ -25,6 +25,13 @@ post '/upload' do
   max_volatility = params[:max_volatility].to_f
   data           = SmarterCSV.process(params[:file][:tempfile].path)
   @sort_instance = Sort.new(size: portfolio_size, data: data, min_volatility: min_volatility, max_volatility: max_volatility)
+
+  @sort_instance.returns = @sort_instance.list_of_stocks
+  @sort_instance.volatility = @sort_instance.stock_volatility
+
+  binding.pry
+
+  @sort_instance.all = @sort_instance.sort_all
   @sort_instance.save
 
   case params[:report]
